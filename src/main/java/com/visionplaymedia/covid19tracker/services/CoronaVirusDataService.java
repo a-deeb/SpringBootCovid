@@ -11,13 +11,15 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
 public class CoronaVirusDataService {
 
-    private static String VIRUS_DATA_URL ="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
+    private static String VIRUS_DATA_URL ="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
     private List<LocationStats> allStats = new ArrayList<>();
 
     public List<LocationStats> getAllStats() {
@@ -41,12 +43,15 @@ public class CoronaVirusDataService {
         for (CSVRecord record : records) {
 
           //  String state = record.get("Province/State");
+
             LocationStats locationStat = new LocationStats();
             locationStat.setState(record.get("Province/State"));
             locationStat.setCountry(record.get("Country/Region"));
-            locationStat.setLatestTotalCases(Integer.parseInt(record.get(record.size() - 2)));
-            int latestCases = Integer.parseInt(record.get(record.size() -2 ));
-            int previousDayCases = Integer.parseInt(record.get(record.size() -3 ));
+           // String timeStamp = new SimpleDateFormat("dd/MM/YY").format(Calendar.getInstance().getTime());
+          //  System.out.println(timeStamp);
+          //  locationStat.setLatestTotalCases(Integer.parseInt(record.get(timeStamp)));
+            int latestCases = Integer.parseInt(record.get(record.size() - 1 ));
+            int previousDayCases = Integer.parseInt(record.get(record.size() -2 ));
             locationStat.setLatestTotalCases(latestCases);
             locationStat.setDiffDay(latestCases - previousDayCases);
              System.out.println(locationStat);
